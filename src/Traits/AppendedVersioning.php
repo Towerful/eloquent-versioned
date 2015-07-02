@@ -90,12 +90,12 @@ trait AppendedVersioning
             }
         }
 
-        // If the model is brand new, we'll insert it into our database and set the
-        // ID attribute on the model to the value of the newly inserted row's ID
-        // which is typically an auto-increment value managed by the database.
+        // If the model is brand new, we'll insert it into our database, 
+        // then set the model_id to the id of the newly created record.
         else {
-            $this->{static::getModelIdColumn()} = static::getNextModelId();
             $saved = $this->performInsert($query, $options);
+            $this->{static::getModelIdColumn()} = $this->{$this->primaryKey};
+            $saved = $saved && $this->performUpdate($query, $options)
         }
 
         if ($saved) {
